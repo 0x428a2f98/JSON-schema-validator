@@ -10,7 +10,7 @@ working version: 10%
 '''
 from os import listdir              #
 from os.path import isfile, join    #
-from datetime import date           # temp for debuging
+from datetime import date, datetime           # temp for debuging
 import random                       # temp for debuging
 
 import jsonschema                   # for validating json
@@ -44,7 +44,8 @@ class JsonValidator:
         '''
         self.debug_lvl = True  # TMP to_remove debug
         self.deb_print(("#debug. JsonValidator obj. __init__(json_folder = %s, "
-                        + "schema_folder = %s) >>> ") % (json_folder, schema_folder))
+                        + "schema_folder = %s) >>> ") % (json_folder, schema_folder), 
+                        withTimeStamp = True)
 
         self.collection_jsons = []
         self.collection_schemas = []
@@ -60,7 +61,7 @@ class JsonValidator:
             json_data   (JSON_obj)       : json to validate
             schema_data (JSON_schema)    : schema
         '''
-        self.deb_print("#debug. JsonValidator obj. validate_schema( __ )")
+        self.deb_print("#debug. JsonValidator obj. validate_schema( __ )", withTimeStamp = True)
         self.deb_print("_json_data = %s" % json_data.get_name())
         self.deb_print("_schema_data = %s" % schema_data.get_name())
 
@@ -68,7 +69,8 @@ class JsonValidator:
             jsonschema.validate(instance=json_data.get_data(),
                                 schema=schema_data.get_data())
         except jsonschema.ValidationError as e:
-            print(e.message)
+            print("\t", "jsonschema.ValidationError:")
+            print("\t\t", e.message)
 
     def load_JSONS(self, json_folder):
         '''
@@ -77,7 +79,7 @@ class JsonValidator:
         Args:
             json_folder   : folder to look for jsons in.
         '''
-        self.deb_print("#debug. JsonValidator obj. loadJSONS() >>> ")
+        self.deb_print("#debug. JsonValidator obj. loadJSONS() >>> ", withTimeStamp = True)
 
         for file_json in listdir(json_folder):
             if isfile(join(json_folder, file_json)):
@@ -94,7 +96,7 @@ class JsonValidator:
         Args:
             schema_folder   : folder to look for schemas in.
         '''
-        self.deb_print("#debug. JsonValidator obj. loadSCHEMAS() >>> ")
+        self.deb_print("#debug. JsonValidator obj. loadSCHEMAS() >>> ", withTimeStamp = True)
 
         for file_schema in listdir(schema_folder):
             if isfile(join(schema_folder, file_schema)):
@@ -105,7 +107,7 @@ class JsonValidator:
                        len(self.collection_schemas))
 
     # Debug ~
-    def deb_print(self, text_to_print):
+    def deb_print(self, text_to_print, withTimeStamp = False):
         '''
         Prints %text_to_print only if debug is enabled
 
@@ -113,14 +115,15 @@ class JsonValidator:
             text_to_print   : text to print out.
         '''
         if self.debug_lvl:
-            print(text_to_print)
+            if withTimeStamp: print(datetime.now().strftime('[%H:%M:%S]'), text_to_print)
+            else: print("\t", text_to_print)
 
     def deb_getRandomJson(self):
         '''
         Debug fuction. to_remove
         Prints random JSON_obj index in collection_jsons and its filename.
         '''
-        self.deb_print("#debug. JsonValidator obj. deb_getRandomJson() >>> ")
+        self.deb_print("#debug. JsonValidator obj. deb_getRandomJson() >>> ", withTimeStamp = True)
 
         rand_index = random.randint(0, len(self.collection_jsons) - 1)
         return([rand_index, self.collection_jsons[rand_index].get_name(),
@@ -130,7 +133,7 @@ class JsonValidator:
         '''
         Debug fuction. Prints out the number of loaded jsons/schemas.
         '''
-        self.deb_print("#debug. JsonValidator obj. self.deb_printStats() >>> ")
+        self.deb_print("#debug. JsonValidator obj. self.deb_printStats() >>> ", withTimeStamp = True)
 
         self.deb_print("collection_jsons len: %i" % len(self.collection_jsons))
         self.deb_print("collection_schemas len: %i" %
@@ -146,7 +149,7 @@ class JsonValidator:
         '''
         Debug fuction. Prints a placeholder readme file.
         '''
-        self.deb_print("#debug. JsonValidator obj. deb_updateReadme() >>> ")
+        self.deb_print("#debug. JsonValidator obj. deb_updateReadme() >>> ", withTimeStamp = True)
 
         readme_file = open("README.md", "w")
         readme_file.write("results will be here. work in progress.")
